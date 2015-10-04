@@ -9,32 +9,34 @@ import java.nio.charset.Charset;
 public class Cities {
 	
 	public static void main (String args[])  throws IOException
-    { 
+        { 
 		BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter out = new PrintWriter("cities.csv");
 		String jsonText  = readJson( bufferRead.readLine());
+		//Each id attribute represents a new City
 		String [] cities = jsonText.split("_id\":");
-	      if(cities.length>1)
-	      {
-	    	  for(int i = 1;i<cities.length;i++)
-	    	  {
-	    		  String city = getCityCSV(cities[i]);
-	    		  out.println(city);
-	    		  System.out.println(city);
-	    	  }
-	      }
-	      out.close();
-    } 
+		// if array is not empty go get CSV for each city
+	        if(cities.length>1)
+	        {
+		        for(int i = 1;i<cities.length;i++)
+	    	  	{
+	    			  String city = getCityCSV(cities[i]);
+	    			  out.println(city);
+	    			  System.out.println(city);
+	    	  	}
+	        }
+	    out.close();
+         } 
 	
 	 public static String readJson(String cityName)throws IOException
 	 {
+		 //Takes City Name queries URL and returns Json String
 		 InputStream is = new URL("http://api.goeuro.com/api/v2/position/suggest/en/"+cityName).openStream();
 		 try 
 		 {
 		      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
 		      return rd.readLine();
-		     
-		  }
+		 }
 		 catch(Exception e)
 		 {
 			 return "";
@@ -43,11 +45,11 @@ public class Cities {
 		 {
 		      is.close();
 		 }
-		
 	 }
 	
 	 public static String getCityCSV(String cityJson)
-	{
+	 {
+		//Takes one city from Json array and returns it as a comma seperated value
 		String CityCSV = "";
 		String [] cityAttributes = cityJson.split(",");
 		
@@ -58,13 +60,18 @@ public class Cities {
 		CityCSV+= getAttributeValue("longitude",false,cityJson);		
 		
 		return CityCSV;
-	}
+	 }
 	
-	 public static String getAttributeValue(String attributeName, boolean isString, String cityJson)
+	public static String getAttributeValue(String attributeName, boolean isString, String cityJson)
 	{
+		//Gets the value of a specific attribute from one city in json
+		
+		//if attribute doesn't exist return empty string
 		if(!cityJson.contains(attributeName))
 			return "";
+		
 		String value = "";
+		//String attributes and numeric attributes are treated differently
 		if(isString)
 		{
 			 value = cityJson.split("\""+attributeName+"\":\"")[1].split("\"")[0];
@@ -73,7 +80,7 @@ public class Cities {
 		{
 			value = cityJson.split("\""+attributeName+"\":")[1].split(",|}")[0];
 		}
-		
+		//if attribute value is null return an empty string
 		if(value.equals("null"))
 			return "";
 					
