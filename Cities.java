@@ -9,24 +9,25 @@ import java.nio.charset.Charset;
 public class Cities {
 	
 	public static void main (String args[])  throws IOException
-        { 
-		BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+    	{ 
 		PrintWriter out = new PrintWriter("cities.csv");
-		String jsonText  = readJson( bufferRead.readLine());
-		//Each id attribute represents a new City
-		String [] cities = jsonText.split("_id\":");
-		// if array is not empty go get CSV for each city
-	        if(cities.length>1)
-	        {
-		        for(int i = 1;i<cities.length;i++)
-	    	  	{
-	    			  String city = getCityCSV(cities[i]);
-	    			  out.println(city);
-	    			  System.out.println(city);
-	    	  	}
-	        }
-	    out.close();
-         } 
+		if(args.length>0){
+			String jsonText  = readJson( args[0]);
+			//Each id attribute represents a new City
+			String [] cities = jsonText.split("_id\":");
+			// if array is not empty go get CSV for each city
+			if(cities.length>1)
+			{
+				for(int i = 1;i<cities.length;i++)
+	    	  		{
+					String city = getCityCSV(cities[i]);
+					out.println(city);
+					System.out.println(city);
+	    	  		}
+			}
+	    	}
+	    	out.close();
+	  } 
 	
 	 public static String readJson(String cityName)throws IOException
 	 {
